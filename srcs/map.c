@@ -22,24 +22,90 @@
  *  @param: xsize (int) the number of columns of the map
  *  @param: ysize (int) the number of rows of the map
  */
-int fill_map(wchar_t **map_data, int xsize, int ysize)
+int fill_map(char *mappath, int xsize, int ysize)
 {
 	int mapsize;
 	int pos;
-
-     if (!map_data)
-         return (1);
-     mapsize = xsize * ysize;
-     pos = 0;
-     setlocale(LC_CTYPE, "");
+	wchar_t base_tile;
+	size_t length;
+	int fd;
+	
+	setlocale(LC_ALL, ""); 	//Set the local for the unicode encoding 
+    mapsize = xsize * ysize;
+    pos = 0;
+	base_tile = L'❇';
+	length = wcrtomb(NULL, base_tile, 0); 
+	fd = open(mappath, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	
+	printf("::Preparing for filling map\n");
+    if (fd == -1) {
+        perror("Error al abrir el archivo");
+        return 1;
+    }
+	printf(" ::Filling map\n");
      while(pos < mapsize)
-         (*map_data)[pos++] = L'❇';
-     (*map_data)[pos++] = '\0';
-     if (!(*map_data)[pos++])
-         return (1);
-     else
-         return (0);
+	 {
+		if (pos != 0 && pos % xsize == 0)
+		{
+			if (write(fd, "\n", 1) == -1)
+			{
+				perror("An error occurred while writing the map");
+				close(fd); 
+				return (-1);
+			}
+		}
+        if (write(fd, &base_tile, length * sizeof(wchar_t)) == -1)
+		{
+			perror("An error occurred while writing the map");
+			close(fd); 
+			return (-1);
+		}
+		pos++;
+	 }
+	printf(" ::Map filled with base tiles\n");
+     while(pos < mapsize)
+	 if (close(fd) == -1)
+	 {
+		 perror("An error occurred while closing the file");
+		 return (1);
+	 }
+	printf(" ::Map File Closed\n");
+	return (0);
 } 
+
+/**
+ * Print a map in the terminal
+ * @params: map (wchar_t *) the map data to be printed in the console
+ */
+int load_map(char *mappath)
+{
+	char buffer[G_MAP_ROWS * G_MAP_COLS + G_MAP_ROWS];
+	wchar_t currentmap[G_MAP_ROWS * G_MAP_COLS + G_MAP_ROWS];
+	ssize_t bytes_read;
+	int fd;
+
+	printf(" ::Preparing locals for printing unicode map\n");
+	setlocale(LC_ALL, "");
+	fd = open(mappath, O_RDONLY);
+    if (fd == -1) {
+        perror("open file");
+        return (-1);
+    }
+	bytes_read = 1;
+	while ((bytes_read = read(fd, buffer, G_MAP_ROWS * G_MAP_COLS + G_MAP_ROWS)) > 0)
+    {
+		printf("(%lu)", bytes_read);
+		mbstowcs(currentmap, buffer, bytes_read);
+		if (print_map(currentmap) < 0)
+			return (-1);
+	}
+
+	if (close(fd) == -1) {
+        perror("close file");
+        return (-1);
+    }
+	return(0);
+}
 
 /**
  * Print a map in the terminal
@@ -54,8 +120,6 @@ int print_map(wchar_t *map)
     {
 		if(wprintf(L"%lc",*(map + pos++)) < 0)
 			return (1);
-		if (pos != 0 &&  (pos + 1) % G_MAP_COLS == 1)
-			printf("\n");
 	}
 	return(0);
 }

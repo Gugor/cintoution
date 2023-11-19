@@ -42,7 +42,7 @@ clean:
 fclean: clean
 	@rm -vf $(TARGET)
 
-re: clean, fclean, all
+re: clean fclean all
 
 run: $(TARGET)
 	./$(TARGET)

@@ -10,17 +10,12 @@ int G_MAP_COLS = 10;
 int main (int argc, char **argsv)
 {
 	char input[MAX_INPUT];
-	wchar_t *map;
 
 	if(argc < 1)
 		exit(0);
 	if(!argsv[0])
 		exit(0);
-	clear_terminal();
 	start_game();
-	map = (wchar_t *)calloc(G_MAP_ROWS * G_MAP_COLS, sizeof(map));
-	if (!map)
-		return(1);
 	/**
 	 * Game Loop
 	 * */
@@ -36,9 +31,13 @@ int main (int argc, char **argsv)
 		{
 			sleep(1);
 			printf(":: MAP(%ix%i) tiles:\n",G_MAP_ROWS, G_MAP_COLS);
-			if (!fill_map(&map, G_MAP_COLS, G_MAP_ROWS)) 
-				return (1);
-			print_map(map);
+			// Filling the map with base tile
+			if (fill_map("assets/veiled-map", G_MAP_COLS, G_MAP_ROWS) < 0) 
+				return (-1);
+			printf("Preparing for printig map\n");
+			// Printing the current state of map
+			if (load_map("assets/veiled-map") < 0)
+				return (-1);
 		}
 	}
 	return (0);
