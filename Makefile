@@ -23,7 +23,7 @@ MF			= Makefile
 # Libraries
  
 # Files
-SRCS = $(addprefix $(SRCS_DIR)/, main.c game.c map.c player.c input.c)
+SRCS = $(addprefix $(SRCS_DIR)/, main.c game.c map.c player.c input.c messages.c)
 OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 all: $(TARGET)

@@ -2,6 +2,7 @@
 #include "../includes/input.h"
 #include "../includes/map.h"
 #include "../includes/effects.h"
+#include "../includes/messages.h"
 
 int GAME_STATUS = 1;  
 int G_MAP_ROWS = 6;
@@ -25,16 +26,14 @@ int main (int argc, char **argsv)
 		if(GAME_STATUS == 1 && input[0] == 'y')
 		{
 			sleep(1);
-			printf(":: Creating custom level map...\n\n");
+			print_same_line(":: Creating custom level map...", -1);
 		}
 		else if(GAME_STATUS == 1 && input[0] == 'n')
 		{
-			sleep(1);
-			printf(":: MAP(%ix%i) tiles:\n",G_MAP_ROWS, G_MAP_COLS);
 			// Filling the map with base tile
 			if (fill_map("assets/veiled-map", G_MAP_COLS, G_MAP_ROWS) < 0) 
 				return (-1);
-			printf("Preparing for printig map\n");
+			sleep(1);
 			// Printing the current state of map
 			if (load_map("assets/veiled-map") < 0)
 				return (-1);
