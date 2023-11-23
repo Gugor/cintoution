@@ -23,14 +23,14 @@
  *  @param: xsize (int) the number of columns of the map
  *  @param: ysize (int) the number of rows of the map
  */
-int fill_map(char *mappath, int xsize, int ysize)
+int fill_map(char *mappath, int size)
 {
 	int mapsize;
 	int pos;
 	int fd;
 	char base_tile;
 	
-    mapsize = xsize * ysize;
+    mapsize = size * size;
     pos = 0;
 	base_tile = 'X';
 
@@ -41,7 +41,7 @@ int fill_map(char *mappath, int xsize, int ysize)
     }
     while(pos < mapsize)
 	{
-		if (pos != 0 && pos % xsize == 0)
+		if (pos != 0 && pos % size == 0)
 		{
 			if (write(fd, "\n", 1) == -1)
 			{
@@ -80,14 +80,14 @@ int load_map(char *mappath)
 	ssize_t bytes_read;
 	int fd;
 
-	currentmap = (char *)calloc(G_MAP_ROWS * G_MAP_COLS + G_MAP_ROWS, sizeof(char *));
+	currentmap = (char *)calloc(G_MAP_SIZE * G_MAP_SIZE + G_MAP_SIZE, sizeof(char *));
 	if ((fd = open(mappath, O_RDONLY)) < 0) 
 	{
         perror("open file");
         return (-1);
     }
 	bytes_read = 1;
-	if ((bytes_read = read(fd, currentmap, G_MAP_ROWS * G_MAP_COLS + G_MAP_ROWS)) > 0)
+	if ((bytes_read = read(fd, currentmap, G_MAP_SIZE * G_MAP_SIZE + G_MAP_SIZE)) > 0)
     {
 		if (write(1, "\n\n", 2) < 0)
 		{
@@ -129,7 +129,7 @@ int print_map(char **map)
 	pos = 0;
 	m = *map;
 
-	print_message(m, -1);
+	print_message(m, -1, '.');
 
 	if(map || *map)
 	{

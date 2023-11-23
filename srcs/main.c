@@ -6,12 +6,12 @@
 #include "../includes/game-console.h"
 
 int GAME_STATUS = 1;  
-int G_MAP_ROWS = 6;
-int G_MAP_COLS = 10;
+int G_MAP_SIZE = 10;
 
 int main (int argc, char **argsv)
 {
 	char input[MAX_INPUT];
+//	t_map map;
 
 	if(argc < 1)
 		exit(0);
@@ -35,7 +35,7 @@ int main (int argc, char **argsv)
 		{
 			remove_line();
 			// Filling the map with base tile
-			if (fill_map("assets/veiled-map", G_MAP_COLS, G_MAP_ROWS) < 0) 
+			if (fill_map("assets/veiled-map", G_MAP_SIZE) < 0) 
 				return (-1);
 			sleep(1);
 			// Printing the current state of map

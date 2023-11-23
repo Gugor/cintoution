@@ -1,7 +1,20 @@
 # include "../includes/messages.h"
 # include "../includes/game.h"
 
-int print_message(char *message, int speed)
+static int print_separator(char separator)
+{
+		if (separator)
+		{
+			if (write(1, &separator, 1) < 0)
+			{
+				perror("write message");
+				return (-1) ;
+			}	
+		}
+		return (0);
+}
+
+int print_message(char *message, int speed, char separator)
 {
 	int pos;
 
@@ -16,6 +29,7 @@ int print_message(char *message, int speed)
 		speed = 90000;
 	while (*(message + pos))
 	{
+		print_separator(separator);
 		if (write(1, &message[pos], 1) < 0)
 		{
 			perror("write message");
@@ -24,6 +38,7 @@ int print_message(char *message, int speed)
 		pos++;
 		usleep(speed);
 	}
+	print_separator(separator);
 	fflush(stdout);
 	return (pos);
 }

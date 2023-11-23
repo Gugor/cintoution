@@ -1,0 +1,22 @@
+// This file is used to store the default configuration of the game
+// BRAND CONFIG
+NAME = Intutition
+
+// MAP CONFIG
+SIZE = 10
+
+// ASSETS PATH
+VEILED_MAP_PATH = "assets/veiled-map"
+REVEALED_MAP_PATH = "assets/revealed-map"
+TILES_PATH = "assets/tiles"
+
+//DIFFICULTY CONFIG
+DENSITY_MIN = 0
+DENSITY_MAX = 0.55
+DENSITY_MOD = 3
+
+// MAP GROWTH
+GROWTH_MODIFIER = 1
+
+// DEFAULT TILE SEPARATOR
+TILE_SEPARATOR = " "
