@@ -21,17 +21,20 @@ int main (int argc, char **argsv)
 	start_game();
 	/**
 	 * Game Loop
-	 * */
+	 * *
+	 */
+	char inpt = 'n'; // Provitional. ERASEESSS!!!! 
+	input[0] = '\0';		// REMOVE!!!
 	while(GAME_STATUS != 0)
 	{
-		scanf("%s", input);
-		if(GAME_STATUS == 1 && input[0] == 'y')
+		//scanf("%s", input);
+		if(GAME_STATUS == 1 && inpt == 'y')
 		{
 			sleep(1);
 			remove_line();
 			print_same_line(":: Creating custom level map...",0 ,2);
 		}
-		else if(GAME_STATUS == 1 && input[0] == 'n')
+		else if(GAME_STATUS == 1 && inpt == 'n')
 		{
 			remove_line();
 			map = map_init();

@@ -2,7 +2,7 @@
 # define MESSAGES_H
 //MACROS
 # ifndef SHOW_MESSAGES
-# define SHOW_MESSAGES 0
+# define SHOW_MESSAGES 1 
 # endif
 // Function Protoypes
 int print_message(char *message, int speed, int delay);

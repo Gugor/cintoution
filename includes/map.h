@@ -49,42 +49,48 @@
 extern int G_MAP_SIZE;
 
 //Structs
+struct s_difficulty;
+
 typedef struct s_tile_imgs
 {	
-	char player;
-	char exit;
-	char death;
-	char danger;
-	char fog;
+	char	player;
+	char	exit;
+	char	death;
+	char	danger;
+	char	fog;
 } t_tile_imgs;
 
 typedef struct s_map
 {	
-	int size;
-	char *current_path;
-	char *terrain_path;
-	t_tile_imgs *imgs;
-	int player;
-	int exit; 
-	int *dangers;
-	char *terrain;
-	char *current;
+	int			size;
+	char		*current_path;
+	char		*terrain_path;
+	t_tile_imgs	*imgs;
+	int			player;
+	int			exit; 
+	int			dangers;    //The number of tiles in terrain that can kill the player
+	char		*terrain;
+	char		*current;
 } t_map;
 
 
 // ***** PROTOTYPES ****** //
 // ... Map ... //
-int hide_map(char *mappath, int size, char fog);
-int create_terrain(t_map *map, t_difficulty *difficulty);
-int print_map(char **map);
-int load_map(char *mappath);
-//int update_map(t_map map); // TODO
+int			hide_map(char *mappath, int size, char fog);
+int			create_terrain(t_map *map, t_difficulty *difficulty);
+int			print_map(char **map);
+int			load_map(char *mappath);
+//int update_map(t_map *map); // TODO
 // ... Map Init ... //
-t_map *map_init();
-t_tile_imgs *map_images_init();
+t_map		*map_init();
+t_tile_imgs	*map_images_init();
 // ... Map Utilities ... //
-char *get_tiles(char *tiles_file);
+char		*get_tiles(char *tiles_file);
 // ... Map Generator ... //
-int exit_init(t_map *map);
-
+int			exit_init(t_map *map);
+int			player_init(t_map *map, t_difficulty *difficulty);
+void		death_init(t_map  *map, t_difficulty *difficulty);
+// ... Difficulty ... //
+int			difficulty_init(t_map *map, t_difficulty *difficulty);
+t_density	density_init(t_map map);
 #endif

@@ -17,7 +17,7 @@
 #include "../includes/game.h"
 #include "../includes/messages.h"
 #include "../includes/random.h"
-#include "../includes/difficulty.h"
+//#include "../includes/difficulty.h"
 
 /**
  * Create a map with an exit, dangers and the player
@@ -26,23 +26,38 @@
  */
 int create_terrain(t_map *map, t_difficulty *difficulty)
 {
+	char *terrain;
 	if (!map)
 	{
 		perror("Missing data Map Data");
 		exit(EXIT_FAILURE);
 	}
 
+	
 	if (!difficulty)
 	{
-		// Set random exit
-		exit_init(map);
-
-	}
-	/*
-	{
-		perror("Missing Difficulty Data");
+		perror("[map.c] Missing Difficulty Data");
 		exit(EXIT_FAILURE);
-	}*/
+	}
+	// Prepare memory for tarrain
+	terrain = (char *)malloc(map->size * map->size * sizeof(char) + 1);
+	if (!terrain)
+	{
+		perror("No enought space to create the map");
+		exit(EXIT_FAILURE);
+	}
+	// Set the exit in the terrain
+	printf(":: Init exit tile\n");
+	terrain[exit_init(map)]					= map->imgs->exit;
+	// Set the player in the terrain
+	printf(":: Init player tile\n");
+	terrain[player_init(map, difficulty)] 	= map->imgs->player; 
+	// Initialize game data
+	printf(":: Init death tiles\n");
+	death_init(map, difficulty);
+	// Save terrain in file
+	printf(":: Preparing to save terrain tiles\n");
+	// save_terrain_map(terrain); 					//TODO
 
 	//int fd;
 	// * * * * *

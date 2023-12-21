@@ -9,7 +9,7 @@
 t_map *map_init()
 {
 	t_map *map;
-	t_difficulty *difficulty = NULL;
+	t_difficulty difficulty;
 	print_same_line(":: Alocating MAP Memory",70000, 1);
 	map = (t_map *)malloc(sizeof(t_map));
 	if(!map)
@@ -19,6 +19,8 @@ t_map *map_init()
 	map->terrain_path	= TERRAIN_MAP_PATH;
 	print_same_line(":: Initializing map images",70000, 1);
 	map->imgs			= map_images_init();   
+	printf(":: Creating Terrain\n");
+	difficulty_init(difficulty);
 	create_terrain(map, difficulty); // TODO
 	// map.terrain = get_terrain(); 
 	// set_player_pos(); // TODO
@@ -50,7 +52,6 @@ t_tile_imgs *map_images_init()
 	imgs->death		= tiles[TILES_INDX_DEATH];
 	imgs->danger	= tiles[TILES_INDX_DANGER];
 	imgs->fog		= tiles[TILES_INDX_FOG];
-
 	return (imgs);
 }
 
