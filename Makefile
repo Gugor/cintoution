@@ -20,10 +20,12 @@ DFLAGS 		= -Wall -Wextra -Werror -g
 IFLAGS 		= -I$(INCS_DIR)
 MF			= Makefile
 
-# Libraries
+# .c
+SOURCES = main.c game.c map.c map-init.c player.c input.c messages.c game-console.c \
+		  map-utilities.c map-generation.c random.c mymath.c
  
 # Files
-SRCS = $(addprefix $(SRCS_DIR)/, main.c game.c map.c player.c input.c messages.c)
+SRCS = $(addprefix $(SRCS_DIR)/, $(SOURCES)) 
 OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 all: $(TARGET)
