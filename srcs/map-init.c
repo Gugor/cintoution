@@ -21,7 +21,7 @@ t_map *map_init()
 	map->terrain_path	= TERRAIN_MAP_PATH;
 	print_same_line(":: Initializing map images",70000, 1);
 	map->imgs			= map_images_init();   
-	printf(":: Creating Terrain\n");
+	print_same_line(":: Creating Terrain", 70000, 1);
 	difficulty_init(&difficulty);
 	create_terrain(map, &difficulty); // TODO
 	if (map->imgs)

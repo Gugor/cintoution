@@ -25,7 +25,6 @@ int save_terrain_map(t_map *map)
 	int fd;
 	int maxsize;
 
-	print_message(":: Saving map...", 70000, 1);
 	fd = open(TERRAIN_MAP_PATH, O_WRONLY | O_CREAT | O_TRUNC, 0666);
     if (fd == -1) {
         perror("open map");
@@ -33,10 +32,8 @@ int save_terrain_map(t_map *map)
     }
 	pos = -1;
 	maxsize = pow(map->size, 2);
-	printf("\n :: Map size(%d)\n :: FD[%s](%d)", map->size, TERRAIN_MAP_PATH, fd);
     while(++pos < maxsize)
 	{
-		printf("[%d][%c] ",pos, map->terrain[pos]);
 		if ((pos % map->size) == 0)
 			write(fd, "\n", 1);
 		if (map->terrain[pos])
@@ -50,6 +47,10 @@ int save_terrain_map(t_map *map)
 	return (1);
 
 }
+/**
+ * Fill the terrain with the base tile
+ * 
+ */
 void fill_base_terrain(t_map *map)
 {
 	int size;
@@ -85,31 +86,21 @@ int create_terrain(t_map *map, t_difficulty *difficulty)
 		perror("No enought space to create the map");
 		exit(EXIT_FAILURE);
 	}
+	map->terrain[(int)pow(map->size, 2) + 1] = '\0';
 	fill_base_terrain(map); 
-	printf("\n%s\n", map->terrain);
-	map->terrain[map->size * map->size + 1] = '\0';
 	// Set the exit in the terrain
-	printf(":: Init exit tile\n");
-	map->terrain[exit_init(map)]					= map->imgs->exit;
+	print_same_line(":: Init exit tile", 70000, 1);
+	set_exit_in(map);
 	// Set the player in the terrain
-	printf(":: Init player tile\n");
-	player_init(map, difficulty);
+	print_same_line(":: Init player tile", 70000, 1);
+	set_player_in(map, difficulty);
 	
 	// Initialize game data
-	printf(":: Init death tiles\n");
-	death_init(map, difficulty);
+	print_same_line(":: Init death tiles", 70000, 1);
+	set_dangers_in(map, difficulty);
 	// Save terrain in file
-	printf(":: Preparing to save terrain tiles\n");
-	save_terrain_map(map); 					//TODO
-
-	//int fd;
-	// * * * * *
-	// * * * * *   // 7 % 5 = 2 cols 		-> 7 / 5 = 1 + 1 = 2 rows
-	// * * * * *   // 8 % 5 = 3 cols 		-> 8 / 5 = 1 + 1 = 2 rows
-	// * * * * *   // 15 % 5 = 0 = 5 cols 	-> 12 / 5 = 2 + 1 = 3 rows
-	// * * * * *
-	printf(":: Exit set at pos %d (x=%d,y=%d)\n", map->exit , (map->exit % map->size) == 0 ? map->size - 1 : (map->exit % map->size) - 1 , (map->exit / map->size));
-	//fd = open(map->);
+	print_same_line(":: Preparing to save terrain tiles", 70000, 1);
+	save_terrain_map(map);
 	return (1);
 }
 

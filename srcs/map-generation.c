@@ -32,7 +32,7 @@
  *  
  */
 
-int player_init(t_map *map, t_difficulty *difficulty)
+int set_player_in(t_map *map, t_difficulty *difficulty)
 {	
 	t_icoords player_coords;
 	int tmp_pos;
@@ -60,7 +60,6 @@ int player_init(t_map *map, t_difficulty *difficulty)
 		distance		= idistance(player_coords, index_to_map_coords(map->size, map->exit));	
 		rols++;
 	} 
-	printf(" :: Player pos %d\n", tmp_pos);
 	map->player					= tmp_pos;
 	map->terrain[map->player] 	= map->imgs->player; 
 	return (rols);
@@ -72,7 +71,7 @@ int player_init(t_map *map, t_difficulty *difficulty)
  *
  */
 
-int exit_init(t_map *map)
+int set_exit_in(t_map *map)
 {
    if (!map)
    {
@@ -84,6 +83,7 @@ int exit_init(t_map *map)
 
    mapsize = map->size * map->size;
    map->exit = randomize(0, mapsize - 1);
+   map->terrain[map->exit] = map->imgs->exit;
    return (1);
 }
 
@@ -92,32 +92,26 @@ int exit_init(t_map *map)
  * Scatter death point on map terrain
  *
  */
-static void scatter_death_points(t_map *map)
+static void scatter_dangers(t_map *map)
 {
 	int pos;
 	int death_points;
 	int iterations;
 
 	iterations = 0;
-	printf(":: Selecting dangers\n");
 	death_points = map->dangers;
-	printf(":: Randomizing %d dangers (start: %d)\n", death_points, iterations);
 	while (death_points > 0 && iterations < 1000) 
 	{
-		printf("  [%d]", iterations);
 		pos = randomize(0, map->size * map->size - 1); 
-		printf(" Rand pos %d | ", pos);
 		//check_point_exist(pos);					// CHECK POS EXISTS //TODO	
 												
 		if (map->terrain[pos] == map->imgs->base)
 		{
-			printf("Setting death point[%d] [%d/%d]\n", pos, map->dangers - death_points, map->dangers);
 			map->terrain[pos] = map->imgs->danger;
 			death_points--;
 		}
 		++iterations;
 	}
-	printf("%s\n", map->terrain);
 }
 
 /**
@@ -125,16 +119,17 @@ static void scatter_death_points(t_map *map)
  * // TODO
  *
  */
-void death_init(t_map *map, t_difficulty *difficulty)
+void set_dangers_in(t_map *map, t_difficulty *difficulty)
 {
 	//CALCULATE DEATHS POINTS DENSITY
 	//Spread DEATH POINTS 
 	//Check how many path there are to the exit
 	//Check if it's accordingly with the difficulty level
 	//ok || or repeat the process untill maches requirements
-	map->dangers = 0;
-	map->dangers = pow(map->size,2) * difficulty->density->current;
-	scatter_death_points(map);
+	map->dangers = pow(map->size, 2) * 0.05f;//difficulty->density->current;
+	printf(" :: Density %f\n", difficulty->density->current);
+	printf(" :: Mapsize %d and Dangers %d\n",map->size, map->dangers);
+	scatter_dangers(map);
 }
 
 

@@ -117,9 +117,9 @@ t_tile_imgs	*map_images_init();
 //			... Map Utilities ... //
 char		*get_tiles(char *tiles_file);
 //			... Map Generator ... //
-int			exit_init(t_map *map);
-int			player_init(t_map *map, t_difficulty *difficulty);
-void		death_init(t_map  *map, t_difficulty *difficulty);
+int			set_exit_in(t_map *map);
+int			set_player_in(t_map *map, t_difficulty *difficulty);
+void		set_dangers_in(t_map  *map, t_difficulty *difficulty);
 //			... Difficulty ... //
 void		difficulty_init(t_difficulty *difficulty);
 void		density_init(t_difficulty *difficulty);
