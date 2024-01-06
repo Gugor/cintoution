@@ -9,7 +9,7 @@
 # include "difficulty.h"
 // Macros
 # ifndef NUM_TILES
-#  define NUM_TILES 5 
+#  define NUM_TILES 7 
 # endif
 
 # ifndef CURRENT_MAP_PATH
@@ -44,13 +44,19 @@
 #  define TILES_INDX_FOG 4 
 # endif
 
+# ifndef TILES_INDX_BASE
+#  define TILES_INDX_BASE 5 
+# endif
 
-// Globals
+# ifndef TILES_INDX_VERIFY
+#  define TILES_INDX_VERIFY 6 
+# endif
+
+#include "difficulty.h"
+// ... Globals  ... //
 extern int G_MAP_SIZE;
 
-//Structs
-struct s_difficulty;
-
+// ... Structs ... //
 typedef struct s_tile_imgs
 {	
 	char	player;
@@ -58,6 +64,8 @@ typedef struct s_tile_imgs
 	char	death;
 	char	danger;
 	char	fog;
+	char	base;
+	char	verify;
 } t_tile_imgs;
 
 typedef struct s_map
@@ -73,24 +81,46 @@ typedef struct s_map
 	char		*current;
 } t_map;
 
+typedef struct s_density
+{
+	double current;
+	double min;  //Min value % of density
+	double max;  //Max value % of density
+	double mod;  //Modifier of density in each level
+} t_density;
+
+typedef struct s_mgrowth
+{
+	int cangrow;    // 0 || 1
+	double mod;
+} t_mgrowth;
+
+typedef struct s_difficulty
+ {
+     int level;
+     double mod;
+     t_density *density;
+     t_mgrowth *mgrowth;
+     double dist_to_exit_modifier; // Min distance beteewn player and exit to  set player position
+ } t_difficulty;
 
 // ***** PROTOTYPES ****** //
-// ... Map ... //
+//			... Map ... //
 int			hide_map(char *mappath, int size, char fog);
 int			create_terrain(t_map *map, t_difficulty *difficulty);
 int			print_map(char **map);
 int			load_map(char *mappath);
 //int update_map(t_map *map); // TODO
-// ... Map Init ... //
+//			... Map Init ... //
 t_map		*map_init();
 t_tile_imgs	*map_images_init();
-// ... Map Utilities ... //
+//			... Map Utilities ... //
 char		*get_tiles(char *tiles_file);
-// ... Map Generator ... //
+//			... Map Generator ... //
 int			exit_init(t_map *map);
 int			player_init(t_map *map, t_difficulty *difficulty);
 void		death_init(t_map  *map, t_difficulty *difficulty);
-// ... Difficulty ... //
-int			difficulty_init(t_map *map, t_difficulty *difficulty);
-t_density	density_init(t_map map);
+//			... Difficulty ... //
+void		difficulty_init(t_difficulty *difficulty);
+void		density_init(t_difficulty *difficulty);
 #endif

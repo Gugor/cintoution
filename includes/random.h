@@ -9,5 +9,5 @@
 
 // PROTOTYPES
 int randomize(int min, int max);
-
+void initialize_randseed();
 #endif

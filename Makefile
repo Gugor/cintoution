@@ -22,7 +22,8 @@ MF			= Makefile
 
 # .c
 SOURCES = main.c game.c map.c map-init.c player.c input.c messages.c game-console.c \
-		  map-utilities.c map-generation.c random.c mymath.c
+		  map-utilities.c map-generation.c random.c mymath.c \
+		  difficulty_init.c 
  
 # Files
 SRCS = $(addprefix $(SRCS_DIR)/, $(SOURCES)) 

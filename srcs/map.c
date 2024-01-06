@@ -19,6 +19,46 @@
 #include "../includes/random.h"
 //#include "../includes/difficulty.h"
 
+int save_terrain_map(t_map *map)
+{
+	int pos;
+	int fd;
+	int maxsize;
+
+	print_message(":: Saving map...", 70000, 1);
+	fd = open(TERRAIN_MAP_PATH, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+    if (fd == -1) {
+        perror("open map");
+        return 1;
+    }
+	pos = -1;
+	maxsize = pow(map->size, 2);
+	printf("\n :: Map size(%d)\n :: FD[%s](%d)", map->size, TERRAIN_MAP_PATH, fd);
+    while(++pos < maxsize)
+	{
+		printf("[%d][%c] ",pos, map->terrain[pos]);
+		if ((pos % map->size) == 0)
+			write(fd, "\n", 1);
+		if (map->terrain[pos])
+			write(fd, &map->terrain[pos], 1);
+	}
+	if (close(fd) == -1)
+	{
+		perror("close file");
+		return (1);
+	}
+	return (1);
+
+}
+void fill_base_terrain(t_map *map)
+{
+	int size;
+
+	size = pow(map->size, 2);
+	while (--size >= 0)
+		map->terrain[size] = map->imgs->base;
+}
+
 /**
  * Create a map with an exit, dangers and the player
  * according with the level of difficulty
@@ -26,13 +66,12 @@
  */
 int create_terrain(t_map *map, t_difficulty *difficulty)
 {
-	char *terrain;
+
 	if (!map)
 	{
 		perror("Missing data Map Data");
 		exit(EXIT_FAILURE);
 	}
-
 	
 	if (!difficulty)
 	{
@@ -40,24 +79,28 @@ int create_terrain(t_map *map, t_difficulty *difficulty)
 		exit(EXIT_FAILURE);
 	}
 	// Prepare memory for tarrain
-	terrain = (char *)malloc(map->size * map->size * sizeof(char) + 1);
-	if (!terrain)
+	map->terrain = (char *)calloc(map->size * map->size, sizeof(char) + 1);
+	if (!map->terrain)
 	{
 		perror("No enought space to create the map");
 		exit(EXIT_FAILURE);
 	}
+	fill_base_terrain(map); 
+	printf("\n%s\n", map->terrain);
+	map->terrain[map->size * map->size + 1] = '\0';
 	// Set the exit in the terrain
 	printf(":: Init exit tile\n");
-	terrain[exit_init(map)]					= map->imgs->exit;
+	map->terrain[exit_init(map)]					= map->imgs->exit;
 	// Set the player in the terrain
 	printf(":: Init player tile\n");
-	terrain[player_init(map, difficulty)] 	= map->imgs->player; 
+	player_init(map, difficulty);
+	
 	// Initialize game data
 	printf(":: Init death tiles\n");
 	death_init(map, difficulty);
 	// Save terrain in file
 	printf(":: Preparing to save terrain tiles\n");
-	// save_terrain_map(terrain); 					//TODO
+	save_terrain_map(map); 					//TODO
 
 	//int fd;
 	// * * * * *
@@ -156,7 +199,6 @@ int load_map(char *mappath)
 			perror("write map");
 			return (-1);
 		}
-		
 	}
 	else
 	{

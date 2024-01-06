@@ -6,21 +6,27 @@
  * Density Init
  * This value corresponds on how crowded with dangers a map can be
  */
-void  densitiy_init(t_density *density)
+void density_init(t_difficulty *difficulty)
 {
-	density->min		= 0.25;	// The min percentage density can be in a map
-	desnsity->max		= 0.6;  // The max percentage density can be in a map
-	density->current = min;  // The current density to populate a map with dangers
-	density->mod		= 0.1;  // Density multiplier in each growth
+         t_density density;
+
+         density.min = MIN_DENSITY; // The min percentage density can be in a  map
+         density.max = MAX_DENSITY; // The max percentage density can be in a  map
+         density.mod = MOD_DENSITY; // The current density to populate a map   with    dangers
+         density.current = density.min * difficulty->mod; // Density           multiplier in each growth
+         difficulty->density = &density;
 }
 
 /**
  *
  */
-void map_growth_init(t_mgroth *mg)
+void map_growth_init(t_difficulty *difficulty)
 {
-	mg->cangrow = 0;
-	mg->mod = 0.1;
+	t_mgrowth mg;
+
+	mg.cangrow = 0;
+	mg.mod = 0.1;
+	difficulty->mgrowth = &mg;
 }
 
 /**
@@ -28,12 +34,9 @@ void map_growth_init(t_mgroth *mg)
  */
 void difficulty_init(t_difficulty *difficulty)
 {
-	t_density density;
-	t_mgrowth map_grth;
-
 	difficulty->level	= 1;
 	difficulty->mod		= 0.5;
-	density_init(density); 
-	map_growth_init(map_grth) 
-	dist_to_exit_modifier = 2.0;
+	density_init(difficulty); 
+	map_growth_init(difficulty); 
+	difficulty->dist_to_exit_modifier = 2.0;
 }

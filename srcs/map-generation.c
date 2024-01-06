@@ -43,12 +43,9 @@ int player_init(t_map *map, t_difficulty *difficulty)
 	// Testing value we need to init in difficulty init and then in update difficulty
 	difficulty->dist_to_exit_modifier = 0.25f;
 	// Creates a random seed to use rand function
-	initialize_randseed();
-
 	min_distance 	= map->size * difficulty->dist_to_exit_modifier; 
  	// We force the first iteration assigning map size as the initial value 
-	distance 		= map->size; 
-	tmp_pos 		= randomize(0,pow(map->size,2) - 1);
+	tmp_pos 		= randomize(0, pow(map->size,2) - 1);
 	player_coords	= index_to_map_coords(map->size, tmp_pos);
 	distance 		= idistance(player_coords, index_to_map_coords(map->size, map->exit));
 
@@ -60,10 +57,12 @@ int player_init(t_map *map, t_difficulty *difficulty)
 	{
 		tmp_pos 		= randomize(0, pow(map->size, 2) - 1);
 		player_coords	= index_to_map_coords(map->size, tmp_pos);
-		distance = idistance(player_coords, index_to_map_coords(map->size, map->exit));	
+		distance		= idistance(player_coords, index_to_map_coords(map->size, map->exit));	
 		rols++;
 	} 
-	map->player = tmp_pos;
+	printf(" :: Player pos %d\n", tmp_pos);
+	map->player					= tmp_pos;
+	map->terrain[map->player] 	= map->imgs->player; 
 	return (rols);
 }
 
@@ -100,18 +99,19 @@ static void scatter_death_points(t_map *map)
 	int iterations;
 
 	iterations = 0;
-	printf("Selecting dangers\n");
+	printf(":: Selecting dangers\n");
 	death_points = map->dangers;
-	printf("Init dangers\n");
-	while (death_points > 0 || iterations < 1000) 
+	printf(":: Randomizing %d dangers (start: %d)\n", death_points, iterations);
+	while (death_points > 0 && iterations < 1000) 
 	{
+		printf("  [%d]", iterations);
 		pos = randomize(0, map->size * map->size - 1); 
-		printf(":: Rand pos %d", pos);
+		printf(" Rand pos %d | ", pos);
 		//check_point_exist(pos);					// CHECK POS EXISTS //TODO	
 												
-		if (!map->terrain[pos])
+		if (map->terrain[pos] == map->imgs->base)
 		{
-			printf("Setting death point[%d] [%d/%d]", pos, map->dangers - death_points, map->dangers);
+			printf("Setting death point[%d] [%d/%d]\n", pos, map->dangers - death_points, map->dangers);
 			map->terrain[pos] = map->imgs->danger;
 			death_points--;
 		}
@@ -132,7 +132,6 @@ void death_init(t_map *map, t_difficulty *difficulty)
 	//Check how many path there are to the exit
 	//Check if it's accordingly with the difficulty level
 	//ok || or repeat the process untill maches requirements
-	initialize_randseed();
 	map->dangers = 0;
 	map->dangers = pow(map->size,2) * difficulty->density->current;
 	scatter_death_points(map);
